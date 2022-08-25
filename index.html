@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Validation</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        width: 100%;
+        height: 100vh;
+        background: rgba(46, 46, 46, 0.911);
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        font-family: 'Courier New', Courier, monospace;
+    }
+
+    .container {
+
+        width: 400px;
+        height: 400px;
+        margin: auto;
+        background-color: rgba(235, 235, 235, 0.726);
+        border-radius: 15px;
+        box-shadow: 4px 4px 30px rgba(255, 255, 255, 0.671);
+        padding: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    form input {
+        width: 80%;
+        padding: 10px;
+        margin: 40%;
+        border: 2px solid grey;
+        outline: none;
+        border-radius: 4px;
+        font-size: 16px;
+        align-items: center;
+    }
+
+    button {
+        width: 90%;
+        font-size: 20px;
+        border: none;
+        outline: none;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 60px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        color: white;
+        background-color: black;
+        transition: 0.15s ease-in;
+    }
+
+    .error {
+        color: red;
+        display: none;
+    }
+
+    .sucess {
+        color: green;
+        display: none;
+    }
+
+    .sucess::before {
+        content: "✓";
+        color: green;
+        font-size: 35px;
+        position: absolute;
+        top: 44.5%;
+        right: 37.5%;
+        /* display: none; */
+    }
+
+    .error::before {
+        content: "\26A0";
+        color: red;
+        font-size: 30px;
+        position: absolute;
+        top: 44.5%;
+        right: 37.5%;
+        /* display: none; */
+    }
+</style>
+
+<body>
+    <div class="container">
+        <form>
+            <input type="text" name="email" onkeyup="validate()" id="email" placeholder="Enter Your Mail"
+                autocomplete="off">
+            <span class="error" id="error">Error!</span>
+            <span class="sucess" id="sucess">Sucess</span>
+
+        </form>
+    </div>
+    <script>
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const btn = document.getElementById('login');
+        const error = document.getElementById('error');
+        const sucess = document.getElementById('sucess');
+
+        function IsValidEmail(email) {
+            //Check minimum valid length of an Email.
+            if (email.length <= 2) {
+                return false;
+            }
+            if (email.indexOf(" ") != -1) {
+                return false;
+            }
+            //If whether email has @ character.
+            if (email.indexOf("@") == -1) {
+                return false;
+            }
+
+            var parts = email.split("@");
+            var dot = parts[1].indexOf(".");
+            var dot0 = parts[0].indexOf(".");
+            var len = parts[1].length;
+            var dotSplits = parts[1].split(".");
+            var dotCount = dotSplits.length - 1;
+            var domain = parts[1];
+
+
+            //Check whether Dot is present, and that too minimum 1 character after @.
+            if (dot == -1 || dot < 4 || dotCount > 2 || dot0 > 1) {
+                return false;
+            }
+
+            //Check whether Dot is not the last character and dots are not repeated.
+            for (var i = 0; i < dotSplits.length; i++) {
+                if (dotSplits[i].length == 0) {
+                    return false;
+                }
+            }
+            const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+            for (var i = 0; i < email.split("@")[1].split(".")[1].length; i++) {
+                if (numbers.indexOf(email.split('@')[1].split('.')[1].charAt(i)) >= 0) {
+                    return false;
+                }
+            }
+
+            const special = ["!", "#", "$", "%", "^", "&", "*", "(", ")", "+", "=", "`", "~", ",", "/", "?", ";", ":", "'", "\"", "|", "[", "]", "{", "}", "<", ">", "\\", " "]
+            for (var i = 0; i < email.split("@")[0].length; i++) {
+                if (special.indexOf(email.split('@')[0].charAt(i)) >= 0) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+
+        // btn.addEventListener("click", () => {
+        //     const email = document.getElementById('email').value;
+        //     let check_mail = IsValidEmail(email);
+        //     if (!check_mail) {
+        //         // alert('Not a valid e-mail address');
+        //         error.innerText = "Not a valid e-mail address";
+        //         error.style.display = "block";
+        //     } else {
+        //         // alert('Valid e-mail address');
+        //         error.innerText = "Valid e-mail address";
+        //         error.style.display = "block";
+        //     }
+
+        // });
+        // event.preventDefault();
+//Using Regex
+        //     // var mail_check = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        //     // var pass_check=  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+        //     // if (email.value.match(mail_check) && password.value.match(pass_check)) {
+        //     //     alert('The User is valid');
+        //     // }
+        //     // else {
+        //     //     alert('Please enter valid email & Password');
+        //     }
+
+        function validate() {
+            const email = document.getElementById('email').value;
+            let check_mail = IsValidEmail(email);
+            if (!check_mail) {
+                error.innerText = "Not a valid e-mail address";
+                error.style.display = "block";
+                sucess.style.display = "none";
+            } else {
+                sucess.innerHTML = "Valid e-mail address";
+                sucess.style.display = "block";
+                error.style.display = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>
